@@ -4,18 +4,22 @@ import React from 'react';
  * DashboardStats — summary KPI cards at the top of the dashboard.
  * Shows accounts, total balance, transactions, mesh devices, and idempotency cache.
  */
-export default function DashboardStats({ accounts, transactions, meshState }) {
-  const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0);
-  const settledCount = transactions.filter((t) => t.status === 'SETTLED').length;
+export default function DashboardStats({ accounts = [], transactions = [], meshState }) {
+  const safeAccounts = Array.isArray(accounts) ? accounts : [];
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+  const safeDevices = Array.isArray(meshState?.devices) ? meshState.devices : [];
+
+  const totalBalance = safeAccounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
+  const settledCount = safeTransactions.filter((t) => t.status === 'SETTLED').length;
   const cacheSize    = meshState?.idempotencyCacheSize ?? 0;
-  const onlineDevices = meshState?.devices?.filter((d) => d.hasInternet).length ?? 0;
+  const onlineDevices = safeDevices.filter((d) => d.hasInternet).length;
 
   return (
     <div className="dashboard-grid-3">
       <div className="stat-card blue">
         <span className="stat-icon">🏦</span>
         <div className="stat-label">Accounts</div>
-        <div className="stat-value blue">{accounts.length}</div>
+        <div className="stat-value blue">{safeAccounts.length}</div>
         <div className="stat-sub">₹{totalBalance.toFixed(2)} total balance</div>
       </div>
 
@@ -44,7 +48,7 @@ export default function DashboardStats({ accounts, transactions, meshState }) {
         <span className="stat-icon">📦</span>
         <div className="stat-label">Packets in Mesh</div>
         <div className="stat-value amber">
-          {meshState?.devices?.reduce((s, d) => s + d.packetCount, 0) ?? 0}
+          {safeDevices.reduce((s, d) => s + (Number(d.packetCount) || 0), 0)}
         </div>
         <div className="stat-sub">across all virtual devices</div>
       </div>

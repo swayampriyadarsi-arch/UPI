@@ -4,7 +4,9 @@ import React from 'react';
  * TransactionList — shows the last 20 transactions.
  * Mirrors the "Transaction Ledger" table from dashboard.html.
  */
-export default function TransactionList({ transactions, loading }) {
+export default function TransactionList({ transactions = [], loading }) {
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+
   function formatTime(dateStr) {
     if (!dateStr) return '—';
     return new Date(dateStr).toLocaleTimeString();
@@ -45,7 +47,7 @@ export default function TransactionList({ transactions, loading }) {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((t, idx) => (
+              {safeTransactions.map((t, idx) => (
                 <tr key={t.id}>
                   <td className="text-muted mono">{idx + 1}</td>
                   <td className="mono" style={{ color: 'var(--accent-cyan)' }}>{t.senderVpa}</td>

@@ -25,7 +25,7 @@ export default function PaymentForm({ accounts, onRefresh, onLog }) {
   const [gossipResult, setGossipResult] = useState(null);
   const [flushResult,  setFlushResult]  = useState(null);
 
-  const vpaOptions = accounts.length > 0
+  const vpaOptions = Array.isArray(accounts) && accounts.length > 0
     ? accounts.map((a) => a.vpa)
     : ['alice@demo', 'bob@demo', 'carol@demo', 'dave@demo'];
 

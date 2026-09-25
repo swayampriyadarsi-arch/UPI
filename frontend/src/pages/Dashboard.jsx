@@ -30,9 +30,9 @@ export default function Dashboard() {
         getTransactions(),
         getMeshState(),
       ]);
-      setAccounts(accs);
-      setTransactions(txs);
-      setMeshState(mesh);
+      setAccounts(Array.isArray(accs) ? accs : []);
+      setTransactions(Array.isArray(txs) ? txs : []);
+      setMeshState(mesh && typeof mesh === 'object' ? mesh : null);
     } catch (err) {
       console.error('Refresh error:', err.message);
     } finally {

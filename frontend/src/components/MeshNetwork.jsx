@@ -5,7 +5,7 @@ import React from 'react';
  * Mirrors the "Mesh Devices" section from dashboard.html with enhanced visuals.
  */
 export default function MeshNetwork({ meshState, loading }) {
-  const devices = meshState?.devices ?? [];
+  const devices = Array.isArray(meshState?.devices) ? meshState.devices : [];
   const cacheSize = meshState?.idempotencyCacheSize ?? 0;
 
   function deviceIcon(device) {
@@ -71,7 +71,7 @@ export default function MeshNetwork({ meshState, loading }) {
                 </span>
                 <span className="packet-count">{device.packetCount} pkt(s)</span>
               </div>
-              {device.packetIds && device.packetIds.length > 0 && (
+              {Array.isArray(device.packetIds) && device.packetIds.length > 0 && (
                 <div className="device-packets">
                   {device.packetIds.map((id, i) => (
                     <span key={i} className="packet-chip">{id}…</span>

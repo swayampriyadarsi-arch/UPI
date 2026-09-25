@@ -5,9 +5,9 @@ import axios from 'axios';
  * In dev, Vite forwards /api to backend.
  * In production, VITE_API_URL points to the deployed backend URL (e.g. https://your-backend.onrender.com/api).
  */
-const apiBase = import.meta.env.VITE_API_URL 
-  ? (import.meta.env.VITE_API_URL.replace(/\/+$/, '') + (import.meta.env.VITE_API_URL.endsWith('/api') ? '' : '/api'))
-  : '/api';
+const defaultBackend = 'https://upi-mesh-backend.onrender.com';
+const rawApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultBackend : '/api');
+const apiBase = rawApiUrl.replace(/\/+$/, '') + (rawApiUrl.endsWith('/api') ? '' : '/api');
 
 const api = axios.create({
   baseURL: apiBase,
@@ -16,10 +16,12 @@ const api = axios.create({
 });
 
 // ── Accounts ──────────────────────────────────────────────────────────────────
-export const getAccounts = () => api.get('/accounts').then((r) => r.data);
+export const getAccounts = () => 
+  api.get('/accounts').then((r) => Array.isArray(r.data) ? r.data : []).catch(() => []);
 
 // ── Transactions ──────────────────────────────────────────────────────────────
-export const getTransactions = () => api.get('/transactions').then((r) => r.data);
+export const getTransactions = () => 
+  api.get('/transactions').then((r) => Array.isArray(r.data) ? r.data : []).catch(() => []);
 
 // ── Server Key ────────────────────────────────────────────────────────────────
 export const getServerKey = () => api.get('/server-key').then((r) => r.data);
@@ -29,7 +31,8 @@ export const sendPayment = (payload) =>
   api.post('/demo/send', payload).then((r) => r.data);
 
 // ── Mesh ──────────────────────────────────────────────────────────────────────
-export const getMeshState = () => api.get('/mesh/state').then((r) => r.data);
+export const getMeshState = () => 
+  api.get('/mesh/state').then((r) => (r.data && typeof r.data === 'object' ? r.data : null)).catch(() => null);
 export const runGossip    = () => api.post('/mesh/gossip').then((r) => r.data);
 export const flushBridges = () => api.post('/mesh/flush').then((r) => r.data);
 export const resetMesh    = () => api.post('/mesh/reset').then((r) => r.data);

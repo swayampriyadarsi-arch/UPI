@@ -4,14 +4,16 @@ import React from 'react';
  * AccountList — shows all accounts with balances.
  * Mirrors the "Account Balances" table from the Java dashboard.html.
  */
-export default function AccountList({ accounts, loading }) {
+export default function AccountList({ accounts = [], loading }) {
+  const safeAccounts = Array.isArray(accounts) ? accounts : [];
+
   return (
     <div className="card">
       <div className="card-header">
         <span className="card-icon">🏦</span>
         <span className="card-title">Account Balances</span>
         <span className="card-badge status-badge status-online">
-          {accounts.length} accounts
+          {safeAccounts.length} accounts
         </span>
       </div>
 
@@ -31,7 +33,7 @@ export default function AccountList({ accounts, loading }) {
             </tr>
           </thead>
           <tbody>
-            {accounts.map((a) => (
+            {safeAccounts.map((a) => (
               <tr key={a.vpa}>
                 <td className="mono">{a.vpa}</td>
                 <td>{a.holderName}</td>
