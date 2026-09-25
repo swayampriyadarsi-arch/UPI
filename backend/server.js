@@ -27,7 +27,7 @@ async function start() {
     process.exit(1);
   });
 
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║   UPI Offline Mesh — MERN Backend                 ║
